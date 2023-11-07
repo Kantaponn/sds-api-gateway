@@ -18,7 +18,7 @@ git pull
 docker compose up --build
 ```
 
-Everything should be fine after running the commands. If the problem occurs, please contact me via discord.
+Everything should be fine after running the commands. Make sure you've run the recipe, chef, and review services, and verify that the paths to the services in the docker-compose.yml file are correct. If the problem occurs, please contact me via discord.
 
 ### Step 3 Swagger ui link
 
