@@ -1,0 +1,14 @@
+# docker-compose.yml
+version: "3.9"
+
+services:
+  gateway-api:
+    build:
+      context: .
+    environment:
+      - chef_url=http://host.docker.internal:50001
+      - recipe_url=http://host.docker.internal:50002
+      - review_url=http://host.docker.internal:50003
+
+    ports:
+      - "8080:8080"
