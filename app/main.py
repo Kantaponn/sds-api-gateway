@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Query, Path
 from typing import Annotated
 import requests
 import os
-from app.model import MessageError
+from app.model import MessageError, RecipesData, RecipeDetailData, chefData
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -22,6 +22,7 @@ review_url = os.environ.get("review_url")  # "http://localhost:50003"
 
 @app.get(
     "/recipes",
+    response_model=RecipesData,
     responses={
         400: {"description": "Bad Request", "model": MessageError},
         503: {"description": "Service Unavailable", "model": MessageError},
@@ -40,6 +41,7 @@ def get_recipes(
 
 @app.get(
     "/recipe/{recipe_id}",
+    response_model=RecipeDetailData,
     responses={
         404: {"description": "Not found", "model": MessageError},
         503: {"description": "Service Unavailable", "model": MessageError},
@@ -64,6 +66,7 @@ def read_recipe_by_id(recipe_id: Annotated[int, Path(description="The recipe id"
 
 @app.get(
     "/chef/{chef_id}",
+    response_model=chefData,
     responses={
         404: {"description": "Not found", "model": MessageError},
         503: {"description": "Service Unavailable", "model": MessageError},
