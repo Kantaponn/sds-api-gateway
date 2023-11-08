@@ -2,9 +2,18 @@ from fastapi import FastAPI, HTTPException, Query, Path
 from typing import Annotated
 import requests
 import os
+from app.model import MessageError
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 chef_url = os.environ.get("chef_url")  # "http://localhost:50001"
 recipe_url = os.environ.get("recipe_url")  # "http://localhost:50002"
@@ -14,8 +23,8 @@ review_url = os.environ.get("review_url")  # "http://localhost:50003"
 @app.get(
     "/recipes",
     responses={
-        400: {"description": "Bad Request"},
-        503: {"description": "Service Unavailable"},
+        400: {"description": "Bad Request", "model": MessageError},
+        503: {"description": "Service Unavailable", "model": MessageError},
     },
 )
 def get_recipes(
@@ -29,7 +38,13 @@ def get_recipes(
     return request_get(f"{recipe_url}/recipes", params=params)
 
 
-@app.get("/recipe/{recipe_id}")
+@app.get(
+    "/recipe/{recipe_id}",
+    responses={
+        404: {"description": "Not found", "model": MessageError},
+        503: {"description": "Service Unavailable", "model": MessageError},
+    },
+)
 def read_recipe_by_id(recipe_id: Annotated[int, Path(description="The recipe id")]):
     recipe = request_get(f"{recipe_url}/recipes/{recipe_id}", params={})["recipe"]
 
@@ -47,7 +62,13 @@ def read_recipe_by_id(recipe_id: Annotated[int, Path(description="The recipe id"
     return {"recipe": recipe}
 
 
-@app.get("/chef/{chef_id}")
+@app.get(
+    "/chef/{chef_id}",
+    responses={
+        404: {"description": "Not found", "model": MessageError},
+        503: {"description": "Service Unavailable", "model": MessageError},
+    },
+)
 def read_chef(
     chef_id: Annotated[int, Path(description="The chef id")],
 ):
